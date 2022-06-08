@@ -31,8 +31,8 @@ function M.openInput()
   local fileType = vim.api.nvim_buf_get_option(0, 'filetype')
   local cword = vim.fn.expand("<cword>")
   if cword then
-    fileType = fileType .. "/" .. cword
-  else 
+    fileType = fileType .. "/" .. cword .. " "
+  else
     fileType = fileType .. "/ "
   end
   M.input_buf = api.nvim_create_buf(false, true)
@@ -56,7 +56,7 @@ function M.openInput()
   -- and put it in insert mode
   local cursor_input = fileType:len() + 1
   api.nvim_win_set_cursor(M.input_win, { 1, cursor_input })
-  api.nvim_command('stopinsert')
+  api.nvim_command('startinsert')
 end
 
 function M.openPreview()
@@ -107,6 +107,9 @@ function M.setKey(buf)
       { nowait = true, noremap = true, silent = true })
     api.nvim_buf_set_keymap(buf, 'i', '<CR>', '<Esc>:lua require"cheat-sheet".openPreview()<CR>',
       { nowait = true, noremap = true, silent = true })
+    api.nvim_buf_set_keymap(buf, 'n', '<CR>', '<Esc>:lua require"cheat-sheet".openPreview()<CR>',
+      { nowait = true, noremap = true, silent = true })
+
   end
 end
 
