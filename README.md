@@ -10,7 +10,7 @@ This plugin allows you to use cheat sheet ([cht.sh](https://cht.sh/)) inside the
 Packer
 
 ```bash
-use {"Djancyp/cheet-sheet"}
+use {"Djancyp/cheat-sheet"}
 ```
 
 ## Usage
