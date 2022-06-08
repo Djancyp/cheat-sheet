@@ -91,7 +91,6 @@ function M.openPreview()
   api.nvim_buf_set_option(M.main_buf, "modifiable", true)
   for i, line in ipairs(output) do
     line = line:gsub('[^m]*m', '')
-    line = line:gsub("^[ \t]*", "")
 
     api.nvim_buf_set_lines(M.main_buf, -1, -1, true, { line })
   end
