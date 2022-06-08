@@ -29,7 +29,12 @@ end
 
 function M.openInput()
   local fileType = vim.api.nvim_buf_get_option(0, 'filetype')
-  fileType = fileType .. "/ "
+  local cword = vim.fn.expand("<cword>")
+  if cword then
+    fileType = fileType .. "/" .. cword
+  else 
+    fileType = fileType .. "/ "
+  end
   M.input_buf = api.nvim_create_buf(false, true)
   M.input_win = api.nvim_open_win(M.input_buf, false, {
     relative = M.input_win_relavent,
@@ -43,7 +48,7 @@ function M.openInput()
   api.nvim_win_set_option(M.input_win, 'cursorline', true)
   api.nvim_set_current_win(M.input_win)
   M.setKey(M.input_buf)
-  --add filetype to first line
+  -- add filetype to first line
   api.nvim_buf_set_option(M.input_buf, 'modifiable', true)
   api.nvim_buf_set_lines(M.input_buf, 0, 1, false, { fileType })
 
@@ -51,11 +56,11 @@ function M.openInput()
   -- and put it in insert mode
   local cursor_input = fileType:len() + 1
   api.nvim_win_set_cursor(M.input_win, { 1, cursor_input })
-  api.nvim_command('startinsert')
+  api.nvim_command('stopinsert')
 end
 
 function M.openPreview()
-  --get the text from the input buffer
+  -- get the text from the input buffer
   local input_lines = api.nvim_buf_get_lines(M.input_buf, 0, -1, false)
   input_lines = input_lines[1]
   api.nvim_win_close(M.input_win, true)
