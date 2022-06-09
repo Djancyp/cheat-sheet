@@ -96,8 +96,8 @@ function Resolve_filetype(sh_filetype)
       break
     else
       for _, alies in ipairs(fileType.alies) do
-        if search_fileType == alies then
-          search_fileType = fileType.fileType
+        if sh_filetype == alies then
+          sh_filetype = fileType.fileType
           break
         end
       end
