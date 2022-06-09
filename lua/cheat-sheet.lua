@@ -59,10 +59,63 @@ function M.openInput()
   api.nvim_command('startinsert')
 end
 
+function Resolve_filetype(sh_filetype)
+  local fileTypes = {
+    {
+      fileType = "c",
+      alies = { "c", "h" },
+    },
+    {
+      fileType = "cpp",
+      alies = { "cpp", "hpp" },
+    },
+    {
+      fileType = "javascript",
+      alies = { "js", "nodejs", "node", "javascript", "ts", "typescript" },
+    },
+    {
+      fileType = "python",
+      alies = { "py", "python" },
+    },
+    {
+      fileType = "ruby",
+      alies = { "rb", "ruby" },
+    },
+    {
+      fileType = "rust",
+      alies = { "rs", "rust" },
+    },
+    {
+      fileType = "kotlin",
+      alies = { "kt", "kotlin" },
+    },
+  }
+  for _, fileType in ipairs(fileTypes) do
+    if sh_filetype == fileType.fileType then
+      sh_filetype = fileType.fileType
+      break
+    else
+      for _, alies in ipairs(fileType.alies) do
+        if search_fileType == alies then
+          search_fileType = fileType.fileType
+          break
+        end
+      end
+    end
+  end
+  return sh_filetype
+end
+
 function M.openPreview()
   -- get the text from the input buffer
   local input_lines = api.nvim_buf_get_lines(M.input_buf, 0, -1, false)
   input_lines = input_lines[1]
+  if input_lines == "" then
+    return
+  end
+  local search_fileType = input_lines:split("/")[1]
+  -- list all file types in array
+  search_fileType = Resolve_filetype(search_fileType)
   api.nvim_win_close(M.input_win, true)
   M.input_win = nil
   M.input_buf = nil
@@ -87,7 +140,7 @@ function M.openPreview()
   -- set background color for the window
   api.nvim_win_set_option(M.main_win, 'winhighlight', 'Normal:CursorLine')
 
-  api.nvim_buf_set_option(M.main_buf, 'filetype', 'javascript')
+  api.nvim_buf_set_option(M.main_buf, 'filetype', search_fileType)
   api.nvim_buf_set_option(M.main_buf, "modifiable", true)
   for i, line in ipairs(output) do
     line = line:gsub('[^m]*m', '')
