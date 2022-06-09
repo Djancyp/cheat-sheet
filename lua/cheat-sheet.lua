@@ -161,13 +161,13 @@ function M.setKey(buf)
   elseif M.main_buf == nil then
     api.nvim_buf_set_keymap(buf, 'n', 'q', '<Esc>:lua require"cheat-sheet".close_win()<CR>',
       { nowait = true, noremap = true, silent = true })
-    api.nvim_buf_set_keymap(buf, 'i', 'q', '<Esc>:lua require"cheat-sheet".close_win()<CR>',
+    api.nvim_buf_set_keymap(buf, 'i', '<C-c>', '<Esc>:lua require"cheat-sheet".close_win()<CR>',
       { nowait = true, noremap = true, silent = true })
     api.nvim_buf_set_keymap(buf, 'i', '<CR>', '<Esc>:lua require"cheat-sheet".openPreview()<CR>',
       { nowait = true, noremap = true, silent = true })
     api.nvim_buf_set_keymap(buf, 'n', '<CR>', '<Esc>:lua require"cheat-sheet".openPreview()<CR>',
       { nowait = true, noremap = true, silent = true })
-    api.nvim_buf_set_keymap(buf, 'i', 'd', '<Esc>:lua require"cheat-sheet".removeInput()<CR>',
+    api.nvim_buf_set_keymap(buf, 'i', '<C-d>', '<Esc>:lua require"cheat-sheet".removeInput()<CR>',
       { nowait = true, noremap = true, silent = true })
   end
 end

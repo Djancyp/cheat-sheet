@@ -36,8 +36,8 @@ For more information please visit the cheat sheet website -  ([cht.sh](https://c
 | Key            | Action                          |
 | -------------- | ------------------------------- |
 | q              | exit cheat sheet window         |
-| q              | exit input window (input mode)  |
-| d              | remove text (input mode)        |
+| <C-c>          | exit input window (input mode)  |
+| <C-d>          | remove text (input mode)        |
 | `<CR>`(Enter)  | activate the search             |
 ```
 
