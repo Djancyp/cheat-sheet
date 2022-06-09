@@ -123,12 +123,16 @@ function M.openPreview()
   local url = "https://cheat.sh/" .. input_lines
   local cmdcommand = "curl -s " .. url
   local output = vim.api.nvim_call_function("system", { cmdcommand })
-  output = output:split('\n') -- local output = vim.fn.system(cmdcommand)
+  output = output:split('\n')
+  local win_height = M.main_win_height
+  if #output < M.main_win_height then
+    win_height = #output
+  end
   M.main_buf = api.nvim_create_buf(false, true)
   M.main_win = api.nvim_open_win(M.main_buf, false, {
     relative = M.main_win_relavent,
     width = M.main_win_width,
-    height = M.main_win_height,
+    height = win_height,
     style = M.main_win_style,
     row = M.main_row,
     col = M.main_col,
@@ -157,12 +161,22 @@ function M.setKey(buf)
   elseif M.main_buf == nil then
     api.nvim_buf_set_keymap(buf, 'n', 'q', '<Esc>:lua require"cheat-sheet".close_win()<CR>',
       { nowait = true, noremap = true, silent = true })
+    api.nvim_buf_set_keymap(buf, 'i', 'q', '<Esc>:lua require"cheat-sheet".close_win()<CR>',
+      { nowait = true, noremap = true, silent = true })
     api.nvim_buf_set_keymap(buf, 'i', '<CR>', '<Esc>:lua require"cheat-sheet".openPreview()<CR>',
       { nowait = true, noremap = true, silent = true })
     api.nvim_buf_set_keymap(buf, 'n', '<CR>', '<Esc>:lua require"cheat-sheet".openPreview()<CR>',
       { nowait = true, noremap = true, silent = true })
-
+    api.nvim_buf_set_keymap(buf, 'i', 'd', '<Esc>:lua require"cheat-sheet".removeInput()<CR>',
+      { nowait = true, noremap = true, silent = true })
   end
+end
+
+function M.removeInput()
+  -- remove first line text from input buffer
+  api.nvim_buf_set_option(M.input_buf, 'modifiable', true)
+  api.nvim_buf_set_lines(M.input_buf, 0, 1, false, {})
+  api.nvim_command('startinsert')
 end
 
 function M.close_win()

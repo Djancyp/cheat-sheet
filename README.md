@@ -36,7 +36,9 @@ For more information please visit the cheat sheet website -  ([cht.sh](https://c
 | Key            | Action                          |
 | -------------- | ------------------------------- |
 | q              | exit cheat sheet window         |
-| `<CR>`(Enter)  | activate the seah               |
+| q              | exit input window (input mode)  |
+| d              | remove text (input mode)        |
+| `<CR>`(Enter)  | activate the search             |
 ```
 
 ## Contributing
