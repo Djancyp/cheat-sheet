@@ -54,9 +54,11 @@ function M.openInput()
 
   if opts.auto_fill.filetype then
     local fileType = vim.api.nvim_buf_get_option(0, "filetype")
-    bufContent = bufContent .. fileType .. "/"
-    if not opts.auto_fill.current_word then
-      bufContent = bufContent .. " "
+    if fileType ~= "" then
+      bufContent = bufContent .. fileType .. "/"
+      if not opts.auto_fill.current_word then
+        bufContent = bufContent .. " "
+      end
     end
   end
 
