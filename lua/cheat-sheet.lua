@@ -1,6 +1,6 @@
 local M = {}
 local api = vim.api
-local cmd = vim.api.nvim_create_autocmd
+
 require 'split'
 
 local opts = {
@@ -145,7 +145,7 @@ function M.openPreview()
   if input_lines == "" then
     return
   end
-  
+
 	local search_fileType = input_lines:split("/")
 	if #search_fileType > 1 then
     -- list all file types in array
@@ -157,7 +157,7 @@ function M.openPreview()
   api.nvim_win_close(M.input_win, true)
   M.input_win = nil
   M.input_buf = nil
-  local fileType = vim.api.nvim_buf_get_option(0, 'filetype')
+
   local url = "https://cheat.sh/" .. input_lines
   local cmdcommand = "curl -s " .. url
   local output = vim.api.nvim_call_function("system", { cmdcommand })
@@ -183,7 +183,7 @@ function M.openPreview()
   api.nvim_win_set_option(M.main_win, 'winhighlight', 'Normal:CursorLine')
   api.nvim_buf_set_option(M.main_buf, 'filetype', search_fileType)
 
-  for i, line in ipairs(output) do
+  for _, line in ipairs(output) do
     line = line:gsub('[^m]*m', '')
     api.nvim_buf_set_lines(M.main_buf, -1, -1, true, { line })
   end
