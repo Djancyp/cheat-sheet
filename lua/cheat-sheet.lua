@@ -2,15 +2,37 @@ local M = {}
 local api = vim.api
 local cmd = vim.api.nvim_create_autocmd
 require 'split'
+
+local opts = {
+	auto_fill = {
+    filetype = true,
+    current_word = true,
+  },
+
+	main_win = {
+		style = "minimal",
+		border = "double",
+	},
+
+	input_win = {
+		style = "minimal",
+		border = "double",
+	},
+}
+
+function M.setup(user_conf)
+	opts = vim.tbl_deep_extend("force", opts, user_conf or {})
+end
+
 function M.run()
   local ui = api.nvim_list_uis()[1]
   M.main_win = nil
   M.main_buf = nil
   M.main_win_width = math.floor(ui.width / 1.2)
   M.main_win_height = math.floor(ui.height / 1.2)
-  M.main_win_style = "minimal"
+  M.main_win_style = opts.main_win.style
   M.main_win_relavent = "win"
-  M.main_win_border = 'double'
+  M.main_win_border = opts.main_win.border
   M.main_col = ui.width / 2 - M.main_win_width / 2
   M.main_row = ui.height / 2 - M.main_win_height / 2
 
@@ -18,9 +40,9 @@ function M.run()
   M.input_buf = nil
   M.input_win_width = 60
   M.input_win_height = 1
-  M.input_win_style = "minimal"
+  M.input_win_style = opts.input_win.style
   M.input_win_relavent = "win"
-  M.input_win_border = 'double'
+  M.input_win_border = opts.input_win.border
   M.input_col = ui.width / 2 - M.input_win_width / 2
   M.input_row = ui.height / 2 - M.input_win_height / 2
 
@@ -28,13 +50,23 @@ function M.run()
 end
 
 function M.openInput()
-  local fileType = vim.api.nvim_buf_get_option(0, 'filetype')
-  local cword = vim.fn.expand("<cword>")
-  if cword then
-    fileType = fileType .. "/" .. cword .. " "
-  else
-    fileType = fileType .. "/ "
+  local bufContent = ""
+
+  if opts.auto_fill.filetype then
+    local fileType = vim.api.nvim_buf_get_option(0, "filetype")
+    bufContent = bufContent .. fileType .. "/"
+    if not opts.auto_fill.current_word then
+      bufContent = bufContent .. " "
+    end
   end
+
+  if opts.auto_fill.current_word then
+    local cword = vim.fn.expand("<cword>")
+    if cword then
+      bufContent = bufContent .. cword .. " "
+    end
+  end
+
   M.input_buf = api.nvim_create_buf(false, true)
   M.input_win = api.nvim_open_win(M.input_buf, false, {
     relative = M.input_win_relavent,
@@ -50,11 +82,11 @@ function M.openInput()
   M.setKey(M.input_buf)
   -- add filetype to first line
   api.nvim_buf_set_option(M.input_buf, 'modifiable', true)
-  api.nvim_buf_set_lines(M.input_buf, 0, 1, false, { fileType })
+  api.nvim_buf_set_lines(M.input_buf, 0, 1, false, { bufContent })
 
   -- set cursor on the second line
   -- and put it in insert mode
-  local cursor_input = fileType:len() + 1
+  local cursor_input = bufContent:len() + 1
   api.nvim_win_set_cursor(M.input_win, { 1, cursor_input })
   api.nvim_command('startinsert')
 end
@@ -113,9 +145,15 @@ function M.openPreview()
   if input_lines == "" then
     return
   end
-  local search_fileType = input_lines:split("/")[1]
-  -- list all file types in array
-  search_fileType = Resolve_filetype(search_fileType)
+  
+	local search_fileType = input_lines:split("/")
+	if #search_fileType > 1 then
+    -- list all file types in array
+		search_fileType = Resolve_filetype(search_fileType[1])
+	else
+		search_fileType = "text"
+	end
+
   api.nvim_win_close(M.input_win, true)
   M.input_win = nil
   M.input_buf = nil
