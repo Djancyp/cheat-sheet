@@ -181,14 +181,15 @@ function M.openPreview()
   api.nvim_win_set_option(M.main_win, 'cursorline', true)
   -- set background color for the window
   api.nvim_win_set_option(M.main_win, 'winhighlight', 'Normal:CursorLine')
-
   api.nvim_buf_set_option(M.main_buf, 'filetype', search_fileType)
-  api.nvim_buf_set_option(M.main_buf, "modifiable", true)
+
   for i, line in ipairs(output) do
     line = line:gsub('[^m]*m', '')
-
     api.nvim_buf_set_lines(M.main_buf, -1, -1, true, { line })
   end
+
+  api.nvim_buf_set_option(M.main_buf, "modifiable", false)
+
   M.setKey(M.main_buf)
 end
 
