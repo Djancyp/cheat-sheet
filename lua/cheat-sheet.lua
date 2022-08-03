@@ -160,7 +160,9 @@ function M.openPreview()
   M.input_win = nil
   M.input_buf = nil
 
-  local url = "https://cheat.sh/" .. input_lines
+  local path = input_lines:gsub(" ", "%%20")
+
+  local url = "https://cheat.sh/" .. path
   local cmdcommand = "curl -s " .. url
   local output = vim.api.nvim_call_function("system", { cmdcommand })
   output = output:split("\n")
